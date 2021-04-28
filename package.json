@@ -1,0 +1,131 @@
+{
+    "name": "cra-no-eject-electron",
+    "version": "0.1.0",
+    "description": "An boilerplate for react, typescript, redux, router and electron",
+    "author": {
+        "name": "Midhun C Nair",
+        "email": "midhunch@gmail.com"
+    },
+    "private": true,
+    "main": "build/electron.js",
+    "homepage": "./",
+    "dependencies": {
+        "@reduxjs/toolkit": "^1.5.1",
+        "electron-devtools-installer": "^3.2.0",
+        "react": "^17.0.2",
+        "react-dom": "^17.0.2",
+        "react-redux": "^7.2.3",
+        "react-router-dom": "^5.2.0",
+        "react-scripts": "4.0.3",
+        "web-vitals": "^1.1.1"
+    },
+    "devDependencies": {
+        "@craco/craco": "^6.1.1",
+        "@testing-library/jest-dom": "^5.12.0",
+        "@testing-library/react": "^11.2.6",
+        "@testing-library/user-event": "^12.8.3",
+        "@types/electron-devtools-installer": "^2.2.0",
+        "@types/jest": "^26.0.23",
+        "@types/node": "^14.14.41",
+        "@types/react": "^17.0.4",
+        "@types/react-dom": "^17.0.3",
+        "@types/react-redux": "^7.1.16",
+        "@types/react-router-dom": "^5.1.7",
+        "cross-env": "^7.0.3",
+        "electron": "^12.0.4",
+        "electron-builder": "^22.10.5",
+        "npm-run-all": "^4.1.5",
+        "typescript": "^4.2.4",
+        "wait-on": "^5.3.0"
+    },
+    "scripts": {
+        "start:react": "craco start",
+        "start:react:electron": "cross-env ELECTRON_ENTRY=react-electron-render craco start",
+        "build:react": "craco build",
+        "build:react:electron": "cross-env ELECTRON_ENTRY=react-electron-render craco build",
+        "test:react": "craco test",
+        "test:react:electron": "cross-env ELECTRON_ENTRY=react-electron-render craco test",
+        "eject": "react-scripts eject",
+        "compile:main": "tsc public/electron_main.ts && npm run minmove:main",
+        "minmove:main": "node utils.js minify public/electron_main.js public/electron.js",
+        "delete:electronprecompiles": "node utils.js delete build/electron_main.ts && node utils.js delete build/electron_main.js",
+        "prestart:electron": "npm run compile:main && node utils.js move public/electron.js build/electron.js",
+        "start:electron": "wait-on http-get://localhost:3000/ && cross-env NODE_ENV=development electron .",
+        "build:electron": "npm run compile:main",
+        "start": "npm-run-all -l -p start:electron start:react:electron",
+        "build": "npm-run-all -l -s build:electron build:react:electron delete:electronprecompiles",
+        "test": "npm-run-all -l -p test:react:electron test:react",
+        "prepackage": "npm-run-all -s build",
+        "package": "electron-builder --dir -mwl",
+        "predistribute": "npm-run-all -s build",
+        "distribute": "electron-builder -mwl",
+        "postinstall": "electron-builder install-app-deps",
+        "electron": "electron",
+        "tsc": "tsc"
+    },
+    "eslintConfig": {
+        "extends": [
+            "react-app",
+            "react-app/jest"
+        ]
+    },
+    "browserslist": {
+        "production": [
+            ">0.2%",
+            "not dead",
+            "not op_mini all"
+        ],
+        "development": [
+            "last 1 chrome version",
+            "last 1 firefox version",
+            "last 1 safari version"
+        ]
+    },
+    "build": {
+        "appId": "com.midhun.cranoejectelectron",
+        "copyright": "Copyright © 2021-indefinitely Author Midhun C Nair <midhunch@gmail.com>",
+        "productName": "CRANoEjectElectron",
+        "asar": true,
+        "directories": {
+            "buildResources": "assets/",
+            "output": "dist/"
+        },
+        "files": [
+            "package.json",
+            "build/**/*",
+            "node_modules/**/*"
+        ],
+        "dmg": {
+            "contents": [
+                {
+                    "type": "link",
+                    "path": "/Applications",
+                    "x": 410,
+                    "y": 150
+                },
+                {
+                    "type": "file",
+                    "x": 130,
+                    "y": 150
+                }
+            ]
+        },
+        "nsis": {},
+        "mac": {
+            "target": "dmg",
+            "category": "public.app-category.developer-tools"
+        },
+        "win": {
+            "target": [
+                "nsis",
+                "zip"
+            ]
+        },
+        "linux": {
+            "target": [
+                "deb",
+                "AppImage"
+            ]
+        }
+    }
+}
